@@ -7,160 +7,101 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Agency Hosting Tracker</title>
     <style>
-        :root { 
-            --bg: #000000; 
-            --card: #1c1c1e; 
-            --text: #ffffff; 
-            --accent: #0a84ff; 
-            --danger: #ff453a; 
-            --success: #32d74b; 
-            --warning: #ffd60a; 
-            --purple: #bf5af2; 
-            --muted: #8e8e93;
-        }
+        :root { --bg: #000000; --card: #1c1c1e; --text: #ffffff; --accent: #0a84ff; --danger: #ff453a; --success: #32d74b; --warning: #ffd60a; --purple: #bf5af2; --muted: #8e8e93;}
         
         body { 
             font-family: -apple-system, BlinkMacSystemFont, sans-serif; 
             background: var(--bg); 
             color: var(--text); 
             margin: 0; 
-            padding-bottom: 100px; 
-            -webkit-font-smoothing: antialiased;
+            padding-bottom: 120px; 
             display: flex;
             flex-direction: column;
-            align-items: center; /* Centers the app on wide screens */
+            align-items: center;
         }
 
+        /* Desktop Container Refinement */
         .container { 
             padding: 20px; 
             width: 100%; 
-            max-width: 900px; /* Limits width to keep it elegant on desktop */
+            max-width: 900px; 
             box-sizing: border-box;
+            animation: fadeIn 0.4s ease-out;
         }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .card { 
             background: var(--card); 
-            border-radius: 16px; 
+            border-radius: 18px; 
             padding: 24px; 
-            margin-bottom: 20px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4); 
+            margin-bottom: 24px; 
+            box-shadow: 0 8px 30px rgba(0,0,0,0.5); 
+            border: 1px solid #2c2c2e;
         }
         
-        #notification-area { 
-            position: sticky; 
-            top: 0; 
-            z-index: 1000; 
-            width: 100%; 
-            max-width: 900px; 
-        }
-
-        .alert-banner { 
-            background: var(--danger); 
-            color: white; 
-            padding: 14px; 
-            font-size: 0.9em; 
-            font-weight: bold; 
-            text-align: center; 
-            border-radius: 0 0 12px 12px;
-        }
+        #notification-area { width: 100%; max-width: 900px; position: sticky; top: 0; z-index: 1000; }
+        .alert-banner { background: var(--danger); color: white; padding: 14px; font-size: 0.9em; font-weight: 700; text-align: center; border-radius: 0 0 12px 12px; }
         
-        .header-stats { 
-            display: flex; 
-            justify-content: space-between; 
-            gap: 15px; 
-            margin-bottom: 20px; 
-            width: 100%;
-        }
+        /* Stats Dashboard */
+        .header-stats { display: flex; gap: 16px; margin-bottom: 24px; width: 100%; }
+        .stat-block { background: #1c1c1e; border: 1px solid #2c2c2e; padding: 24px; border-radius: 18px; flex: 1; text-align: center; }
+        .stat-label { font-size: 0.75em; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .stat-value { font-size: 1.8em; font-weight: 800; color: var(--success); }
 
-        .stat-block { 
-            background: #2c2c2e; 
-            padding: 20px; 
-            border-radius: 14px; 
-            flex: 1; 
-            text-align: center; 
-        }
+        /* View Toggle */
+        .view-toggle { display: flex; background: #1c1c1e; border: 1px solid #2c2c2e; border-radius: 12px; padding: 4px; margin-bottom: 24px; width: fit-content; }
+        .toggle-btn { border: none; background: transparent; color: var(--muted); padding: 8px 24px; font-size: 0.85em; font-weight: 600; border-radius: 9px; cursor: pointer; transition: 0.2s; }
+        .toggle-btn.active { background: #3a3a3c; color: white; }
 
-        .stat-label { font-size: 0.75em; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
-        .stat-value { font-size: 1.4em; font-weight: bold; color: var(--success); margin-top: 5px; }
-
-        .view-toggle { 
-            display: flex; 
-            background: #2c2c2e; 
-            border-radius: 12px; 
-            padding: 5px; 
-            margin-bottom: 20px; 
-            width: fit-content;
-            align-self: flex-start;
-        }
-
-        .toggle-btn { 
-            border: none; 
-            background: transparent; 
-            color: var(--muted); 
-            padding: 10px 20px; 
-            font-size: 0.9em; 
-            font-weight: 600; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            transition: all 0.2s;
-        }
-
-        .toggle-btn.active { background: #48484a; color: white; }
-
-        /* Desktop Form Grid */
+        /* Form Grid - Fixed for Desktop */
         @media (min-width: 768px) {
-            #add-form {
-                display: grid;
-                grid-template-columns: 1fr 1fr; /* Two columns for inputs */
-                gap: 10px 25px;
-            }
-            #add-form h2, #add-form .full-width, #add-form button {
-                grid-column: span 2;
-            }
-            .checkbox-row { grid-column: span 2; justify-content: flex-start !important; gap: 15px; }
+            #add-form { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 24px; }
+            .full-row { grid-column: span 2; }
+            .form-header { grid-column: span 2; margin-top: 0; }
+            #save-btn { grid-column: span 2; margin-top: 10px; }
+            .checkbox-row { grid-column: span 2; justify-content: flex-start !important; gap: 12px; }
         }
 
-        .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-weight: 600; }
+        /* Calendar & List Styling */
+        .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
-        .cal-cell { background: #2c2c2e; border-radius: 10px; padding: 15px 0; text-align: center; font-size: 1em; }
+        .cal-cell { background: #2c2c2e; border-radius: 10px; padding: 18px 0; text-align: center; font-size: 1em; }
         .cal-cell.has-event { border-bottom: 4px solid var(--accent); }
-        .cal-cell.today { border: 1px solid var(--accent); color: var(--accent); }
+        .cal-cell.today { border: 1px solid var(--accent); color: var(--accent); font-weight: bold; }
 
-        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; border-bottom: 1px solid #38383a; }
-        .item-sub { font-size: 0.9em; color: var(--muted); margin-top: 6px; display: flex; align-items: center; gap: 10px; }
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; border-bottom: 1px solid #2c2c2e; }
+        .item-info b { font-size: 1.2em; color: #fff; }
+        .item-sub { font-size: 0.9em; color: var(--muted); margin-top: 6px; display: flex; align-items: center; gap: 12px; }
         
-        .price-box { text-align: right; min-width: 100px; }
-        .price-eur { font-weight: bold; font-size: 1.2em; }
+        .price-box { text-align: right; }
+        .price-eur { font-weight: 800; font-size: 1.3em; color: #fff; }
+        .price-usd { font-size: 0.85em; color: var(--muted); margin-top: 4px; }
 
-        .badge { background: #38383a; color: var(--accent); padding: 5px 10px; border-radius: 6px; font-size: 0.8em; font-weight: bold; text-decoration: none; display: inline-block; }
+        .badge { background: #2c2c2e; color: var(--accent); padding: 6px 12px; border-radius: 8px; font-size: 0.8em; font-weight: 600; text-decoration: none; }
         .badge-np { color: var(--warning); border: 1px solid var(--warning); background: transparent; }
-        .btn-action { background: var(--accent); color: white; border: none; padding: 8px 12px; border-radius: 8px; font-size: 0.8em; font-weight: bold; cursor: pointer; }
+        .btn-action { background: var(--accent); color: white; border: none; padding: 10px 16px; border-radius: 8px; font-size: 0.8em; font-weight: 700; cursor: pointer; transition: opacity 0.2s; }
+        .btn-action:active { opacity: 0.7; }
 
-        input, select, button { width: 100%; padding: 16px; border-radius: 12px; border: none; background: #2c2c2e; color: white; font-size: 16px; margin-bottom: 15px; }
-        .checkbox-row { display: flex; justify-content: space-between; align-items: center; background: #2c2c2e; padding: 18px; border-radius: 12px; margin-bottom: 15px; }
-        .checkbox-row input { width: auto; margin: 0; }
+        input, select, button { width: 100%; padding: 16px; border-radius: 12px; border: 1px solid #2c2c2e; background: #1c1c1e; color: white; font-size: 16px; margin-bottom: 16px; }
+        .checkbox-row { display: flex; justify-content: space-between; align-items: center; background: #1c1c1e; border: 1px solid #2c2c2e; padding: 18px; border-radius: 12px; margin-bottom: 16px; }
+        .checkbox-row input { width: 22px; height: 22px; margin: 0; accent-color: var(--accent); }
 
+        /* Centered Bottom Nav */
         .nav { 
-            position: fixed; 
-            bottom: 0; 
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 900px;
-            background: rgba(28,28,30,0.98); 
-            backdrop-filter: blur(20px); 
-            display: flex; 
-            padding: 15px 0 35px; 
-            border-top: 1px solid #38383a; 
-            z-index: 100;
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); 
+            width: 90%; max-width: 400px; 
+            background: rgba(28,28,30,0.8); backdrop-filter: blur(20px); 
+            display: flex; padding: 12px; border-radius: 24px; border: 1px solid #38383a; box-shadow: 0 10px 40px rgba(0,0,0,0.6);
         }
+        .nav-item { flex: 1; text-align: center; color: var(--muted); font-size: 0.85em; font-weight: 600; cursor: pointer; padding: 10px; border-radius: 16px; transition: 0.3s; }
+        .nav-item.active { color: #fff; background: #3a3a3c; }
 
-        .nav-item { flex: 1; text-align: center; color: var(--muted); font-size: 0.85em; font-weight: 600; cursor: pointer; }
-        .nav-item.active { color: var(--accent); }
-
+        /* Auth UI */
         #auth-screen { position: fixed; inset: 0; background: black; z-index: 2000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-        .key { width: 80px; height: 80px; background: #1c1c1e; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.6em; cursor: pointer; }
+        .key { width: 85px; height: 85px; background: #1c1c1e; border: 1px solid #2c2c2e; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8em; font-weight: 300; cursor: pointer; }
+        .key:active { background: #3a3a3c; }
         
         .hidden { display: none !important; }
     </style>
@@ -168,14 +109,14 @@
 <body>
 
     <div id="auth-screen">
-        <h2 style="margin-bottom:0;">Agency Secure Access</h2>
-        <p style="color:var(--muted); margin-bottom:20px;">Enter Agency PIN</p>
-        <div id="pin-dots" style="font-size: 2em; letter-spacing: 12px; height: 40px;"></div>
+        <h1 style="font-weight: 800; letter-spacing: -1px; margin-bottom: 8px;">Agency Drive</h1>
+        <p style="color:var(--muted); margin-bottom:32px; font-weight: 500;">Please verify your identity</p>
+        <div id="pin-dots" style="font-size: 2.2em; letter-spacing: 16px; height: 48px; color: var(--accent);"></div>
         <div class="keypad">
             <div class="key" onclick="press(1)">1</div><div class="key" onclick="press(2)">2</div><div class="key" onclick="press(3)">3</div>
             <div class="key" onclick="press(4)">4</div><div class="key" onclick="press(5)">5</div><div class="key" onclick="press(6)">6</div>
             <div class="key" onclick="press(7)">7</div><div class="key" onclick="press(8)">8</div><div class="key" onclick="press(9)">9</div>
-            <div class="key" style="background:transparent" onclick="clearPin()">C</div><div class="key" onclick="press(0)">0</div>
+            <div class="key" style="border:none; background:transparent" onclick="clearPin()">Clear</div><div class="key" onclick="press(0)">0</div>
         </div>
     </div>
 
@@ -183,32 +124,35 @@
 
     <div id="view-home" class="container hidden">
         <div class="header-stats">
-            <div class="stat-block"><div class="stat-label">Next 30 Days</div><div id="stat-upcoming" class="stat-value">0€</div></div>
-            <div class="stat-block"><div class="stat-label">Monthly MRR</div><div id="stat-mrr" class="stat-value">0€</div></div>
+            <div class="stat-block"><div class="stat-label">30-Day Outlook</div><div id="stat-upcoming" class="stat-value">0€</div></div>
+            <div class="stat-block"><div class="stat-label">Projected MRR</div><div id="stat-mrr" class="stat-value">0€</div></div>
         </div>
 
         <div class="view-toggle">
-            <button id="btn-cal" class="toggle-btn active" onclick="setView('cal')">Calendar</button>
-            <button id="btn-list" class="toggle-btn" onclick="setView('list')">Master List</button>
+            <button id="btn-cal" class="toggle-btn active" onclick="setView('cal')">Calendar View</button>
+            <button id="btn-list" class="toggle-btn" onclick="setView('list')">Audit List</button>
         </div>
         
         <div id="mode-cal">
             <div class="card">
                 <div class="cal-header">
-                    <span id="cal-title">Month Year</span>
-                    <div><button onclick="adjMonth(-1)" style="width:auto; padding:5px 15px; margin:0;">‹</button> <button onclick="adjMonth(1)" style="width:auto; padding:5px 15px; margin:0;">›</button></div>
+                    <span id="cal-title" style="font-size: 1.2em; font-weight: 700;">Month Year</span>
+                    <div style="display:flex; gap:8px;">
+                        <button onclick="adjMonth(-1)" style="width:auto; padding:8px 16px; margin:0; background:#2c2c2e;">‹</button> 
+                        <button onclick="adjMonth(1)" style="width:auto; padding:8px 16px; margin:0; background:#2c2c2e;">›</button>
+                    </div>
                 </div>
                 <div id="calendar-grid" class="cal-grid"></div>
             </div>
             <div class="card">
-                <h2 style="font-size:0.9em; color:var(--muted); text-transform:uppercase;">Month Renewals</h2>
+                <h2 style="font-size:0.8em; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:20px;">Monthly Renewals</h2>
                 <div id="timeline-month"></div>
             </div>
         </div>
 
         <div id="mode-list" class="hidden">
             <div class="card">
-                <h2 style="font-size:0.9em; color:var(--muted); text-transform:uppercase;">Chronological Renewals</h2>
+                <h2 style="font-size:0.8em; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:20px;">Master Hosting Audit</h2>
                 <div id="timeline-full"></div>
             </div>
         </div>
@@ -216,21 +160,21 @@
 
     <div id="view-add" class="container hidden">
         <div class="card">
-            <h2>Add New Hosting</h2>
+            <h2 class="form-header">Provision New Hosting</h2>
             <form id="add-form">
-                <label>Client Name</label><input type="text" id="c-name" placeholder="Client Name" required>
-                <label>Webflow Plan</label><select id="c-plan"><option value="Basic">Basic ($18/$14)</option><option value="CMS" selected>CMS ($29/$23)</option></select>
-                <label>Billing Cycle</label><select id="c-cycle"><option value="monthly">Monthly</option><option value="annual">Annual</option></select>
-                <div class="checkbox-row"><span>Non-Profit (-50%)</span><input type="checkbox" id="c-np"></div>
-                <label>Renewal Date</label><input type="date" id="c-date" required>
-                <button type="submit" id="save-btn">Save to Agency Drive</button>
+                <div><label>Project Name</label><input type="text" id="c-name" placeholder="Client Name" required></div>
+                <div><label>Webflow Tier</label><select id="c-plan"><option value="Basic">Basic ($18/$14)</option><option value="CMS" selected>CMS ($29/$23)</option></select></div>
+                <div><label>Billing Cycle</label><select id="c-cycle"><option value="monthly">Monthly</option><option value="annual">Annual</option></select></div>
+                <div><label>Next Renewal Date</label><input type="date" id="c-date" required></div>
+                <div class="checkbox-row"><span>Apply Non-Profit Discount (-50%)</span><input type="checkbox" id="c-np"></div>
+                <button type="submit" id="save-btn">Commit to Database</button>
             </form>
         </div>
     </div>
 
     <div class="nav hidden" id="nav-bar">
-        <div class="nav-item active" onclick="tab('home')">📅 Dashboard</div>
-        <div class="nav-item" onclick="tab('add')">➕ Add Client</div>
+        <div class="nav-item active" onclick="tab('home')">Dashboard</div>
+        <div class="nav-item" onclick="tab('add')">Provisioning</div>
     </div>
 
     <script>
@@ -238,25 +182,21 @@
         const PIN = "9263";
         let db = [], curMonth = new Date().getMonth(), curYear = new Date().getFullYear(), inputPin = "";
 
-        // --- AUTH ---
         function press(n) {
             inputPin += n;
             document.getElementById('pin-dots').innerText = "•".repeat(inputPin.length);
             if(inputPin === PIN) {
                 document.getElementById('auth-screen').classList.add('hidden');
                 document.getElementById('nav-bar').classList.remove('hidden');
-                tab('home');
-                refresh();
+                tab('home'); refresh();
             } else if(inputPin.length >= 4) clearPin();
         }
         function clearPin() { inputPin = ""; document.getElementById('pin-dots').innerText = ""; }
 
-        // --- CORE LOGIC ---
         async function refresh() {
             const r = await fetch(API);
             const j = await r.json();
-            db = j.data;
-            render();
+            db = j.data; render();
         }
 
         function setView(m) {
@@ -279,7 +219,6 @@
 
             document.getElementById('cal-title').innerText = new Date(curYear, curMonth).toLocaleDateString(undefined, {month:'long', year:'numeric'});
 
-            // Sort entire DB by Date
             const sortedDb = [...db].sort((a,b) => new Date(a.NextRenewal) - new Date(b.NextRenewal));
 
             sortedDb.forEach(c => {
@@ -290,7 +229,7 @@
                 mrrTotal += (c.BillingCycle === 'monthly' ? p.eur : p.eur / 12);
 
                 if(c.IsNonProfit && diff > 0 && diff <= 30) {
-                    notif.innerHTML += `<div class="alert-banner">ACTION: Renew Non-Profit Discount for ${c.ClientName} (${Math.round(diff)}d left)</div>`;
+                    notif.innerHTML += `<div class="alert-banner">🚨 Non-Profit Renewal for ${c.ClientName} in ${Math.round(diff)} days</div>`;
                 }
 
                 const itemHtml = `
@@ -302,9 +241,9 @@
                                 <span>• ${c.PlanType}</span>
                                 ${c.IsNonProfit ? '<span class="badge badge-np">Non-Profit</span>' : ''}
                             </div>
-                            <div style="display:flex; gap:8px;">
-                                ${c.InvoiceURL ? `<a href="${c.InvoiceURL}" target="_blank" class="badge">📄 Invoice</a>` : `<button class="btn-action" onclick="upFile('${c.ID}', 'upload_invoice', this)">⬆️ Invoice</button>`}
-                                ${c.IsNonProfit ? (c.DiscountDocURL ? `<a href="${c.DiscountDocURL}" target="_blank" class="badge">📄 Proof</a>` : `<button class="btn-action" onclick="upFile('${c.ID}', 'upload_discount_doc', this)">⬆️ Proof</button>`) : ''}
+                            <div style="display:flex; gap:12px; margin-top:12px;">
+                                ${c.InvoiceURL ? `<a href="${c.InvoiceURL}" target="_blank" class="badge">View Invoice</a>` : `<button class="btn-action" onclick="upFile('${c.ID}', 'upload_invoice', this)">Upload Invoice</button>`}
+                                ${c.IsNonProfit ? (c.DiscountDocURL ? `<a href="${c.DiscountDocURL}" target="_blank" class="badge">View Proof</a>` : `<button class="btn-action" onclick="upFile('${c.ID}', 'upload_discount_doc', this)" style="background:var(--warning); color:#000;">Upload Proof</button>`) : ''}
                             </div>
                         </div>
                         <div class="price-box">
@@ -313,13 +252,8 @@
                         </div>
                     </div>`;
 
-                // Add to Full List
                 tFull.innerHTML += itemHtml;
-
-                // Add to Month List if applicable
-                if(d.getMonth() === curMonth && d.getFullYear() === curYear) {
-                    tMonth.innerHTML += itemHtml;
-                }
+                if(d.getMonth() === curMonth && d.getFullYear() === curYear) tMonth.innerHTML += itemHtml;
             });
 
             document.getElementById('stat-upcoming').innerText = up30.toFixed(0) + "€";
@@ -358,7 +292,7 @@
         document.getElementById('add-form').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('save-btn');
-            btn.innerText = "Saving to Sheets...";
+            btn.innerText = "Provisioning...";
             const p = { action: "add_subscription", data: { 
                 clientName: document.getElementById('c-name').value, 
                 planType: document.getElementById('c-plan').value,
@@ -368,16 +302,15 @@
                 startDate: new Date().toISOString().split('T')[0], priceUSD: 0, priceEUR: 0
             }};
             await fetch(API, { method: 'POST', body: JSON.stringify(p) });
-            btn.innerText = "Save to Agency Drive";
+            btn.innerText = "Commit to Database";
             document.getElementById('add-form').reset();
-            tab('home');
-            refresh();
+            tab('home'); refresh();
         };
 
         function tab(t) {
             document.getElementById('view-home').classList.toggle('hidden', t!=='home');
             document.getElementById('view-add').classList.toggle('hidden', t!=='add');
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.toggle('active', i.innerText.toLowerCase().includes(t)));
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.toggle('active', i.innerText.toLowerCase().includes(t.substring(0,4))));
         }
         function adjMonth(v) { curMonth += v; if(curMonth>11){curMonth=0;curYear++} if(curMonth<0){curMonth=11;curYear--} render(); }
     </script>
