@@ -4,159 +4,246 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>Agency Finances</title>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Agency Hosting Tracker</title>
     <style>
         :root { --bg: #000000; --card: #1c1c1e; --text: #ffffff; --accent: #0a84ff; --danger: #ff453a; --success: #32d74b; --warning: #ffd60a; --purple: #bf5af2; --muted: #8e8e93;}
-        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 90px; }
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 100px; -webkit-font-smoothing: antialiased; }
         .container { padding: 20px; }
-        .card { background: var(--card); border-radius: 16px; padding: 20px; margin-bottom: 20px; }
-        #notification-area { position: sticky; top: 0; z-index: 200; }
-        .alert-banner { background: var(--danger); color: white; padding: 15px; font-size: 0.85em; font-weight: bold; text-align: center; margin-bottom: 10px; border-radius: 0 0 12px 12px; }
-        .header-stats { display: flex; justify-content: space-between; margin-bottom: 15px; gap: 10px; }
-        .stat-block { background: #2c2c2e; padding: 12px; border-radius: 12px; flex: 1; text-align: center; }
-        .stat-label { font-size: 0.7em; color: var(--muted); text-transform: uppercase; }
-        .stat-value { font-size: 1.1em; font-weight: bold; color: var(--success); }
-        .cal-header { display: flex; justify-content: space-between; align-items: center; font-weight: bold; margin-bottom: 15px; }
-        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
-        .cal-cell { background: #2c2c2e; border-radius: 8px; padding: 10px 0; text-align: center; font-size: 0.9em; }
-        .cal-cell.today { border: 1px solid var(--accent); }
+        .card { background: var(--card); border-radius: 16px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        
+        #notification-area { position: sticky; top: 0; z-index: 1000; }
+        .alert-banner { background: var(--danger); color: white; padding: 12px; font-size: 0.85em; font-weight: bold; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.2); }
+        
+        .header-stats { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 20px; }
+        .stat-block { background: #2c2c2e; padding: 15px; border-radius: 14px; flex: 1; text-align: center; }
+        .stat-label { font-size: 0.7em; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-value { font-size: 1.2em; font-weight: bold; color: var(--success); margin-top: 5px; }
+
+        .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-weight: 600; }
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+        .cal-cell { background: #2c2c2e; border-radius: 8px; padding: 12px 0; text-align: center; font-size: 0.9em; position: relative; }
         .cal-cell.has-event { border-bottom: 3px solid var(--accent); }
-        .list-item { border-bottom: 1px solid #38383a; padding: 15px 0; display: flex; justify-content: space-between; align-items: center; }
-        .item-sub { font-size: 0.8em; color: var(--muted); margin-top: 4px; }
-        .price-eur { font-weight: bold; text-align: right; }
-        .price-usd { font-size: 0.75em; color: var(--muted); text-align: right; }
-        .badge { background: #38383a; padding: 2px 5px; border-radius: 4px; font-size: 0.7em; margin-left: 5px; color: var(--accent); }
-        .badge-discount { color: var(--warning); border: 1px solid var(--warning); }
-        label { font-size: 0.85em; color: var(--muted); margin-bottom: 5px; display: block; }
-        input, select, button { width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 12px; border: none; background: #2c2c2e; color: white; font-size: 16px; }
-        button { background: var(--accent); font-weight: bold; }
-        .checkbox-wrapper { display: flex; justify-content: space-between; align-items: center; background: #2c2c2e; padding: 15px; border-radius: 12px; margin-bottom: 15px; }
-        .nav { display: flex; position: fixed; bottom: 0; left: 0; right: 0; background: rgba(28,28,30,0.9); padding: 15px 0 25px; border-top: 1px solid #38383a; }
-        .nav div { flex: 1; text-align: center; color: var(--accent); font-size: 0.8em; font-weight: 600; }
+        .cal-cell.today { background: #3a3a3c; color: var(--accent); font-weight: bold; }
+
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid #38383a; }
+        .list-item:last-child { border-bottom: none; }
+        .item-info b { display: block; font-size: 1.1em; margin-bottom: 4px; }
+        .item-sub { font-size: 0.85em; color: var(--muted); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+        
+        .price-box { text-align: right; }
+        .price-eur { font-weight: bold; font-size: 1.1em; }
+        .price-usd { font-size: 0.8em; color: var(--muted); }
+
+        .badge { background: #38383a; color: var(--accent); padding: 4px 8px; border-radius: 6px; font-size: 0.75em; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 8px; }
+        .badge-np { color: var(--warning); border: 1px solid var(--warning); background: transparent; }
+        .btn-action { background: var(--accent); color: white; border: none; padding: 6px 10px; border-radius: 6px; font-size: 0.75em; font-weight: bold; cursor: pointer; margin-top: 8px; }
+
+        input, select, button { width: 100%; padding: 16px; border-radius: 12px; border: none; background: #2c2c2e; color: white; font-size: 16px; margin-bottom: 15px; font-family: inherit; }
+        button { background: var(--accent); font-weight: bold; cursor: pointer; }
+        .checkbox-row { display: flex; justify-content: space-between; align-items: center; background: #2c2c2e; padding: 16px; border-radius: 12px; margin-bottom: 15px; }
+        .checkbox-row input { width: auto; margin: 0; }
+
+        .nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(28,28,30,0.95); backdrop-filter: blur(15px); display: flex; padding: 15px 0 30px; border-top: 1px solid #38383a; }
+        .nav-item { flex: 1; text-align: center; color: var(--muted); font-size: 0.75em; font-weight: 600; cursor: pointer; }
+        .nav-item.active { color: var(--accent); }
+
+        #auth-screen { position: fixed; inset: 0; background: black; z-index: 2000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 30px; }
+        .key { width: 75px; height: 75px; background: #1c1c1e; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5em; font-weight: bold; cursor: pointer; }
+        
         .hidden { display: none !important; }
-        #auth-screen { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
+
     <div id="auth-screen">
-        <h2>Agency Login</h2>
-        <div id="pin-display" style="font-size: 2em; letter-spacing: 10px; margin-bottom: 20px;"></div>
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
-            <button onclick="addPin(1)">1</button><button onclick="addPin(2)">2</button><button onclick="addPin(3)">3</button>
-            <button onclick="addPin(4)">4</button><button onclick="addPin(5)">5</button><button onclick="addPin(6)">6</button>
-            <button onclick="addPin(7)">7</button><button onclick="addPin(8)">8</button><button onclick="addPin(9)">9</button>
-            <button onclick="clearPin()">C</button><button onclick="addPin(0)">0</button>
+        <h2 style="margin-bottom:0;">Agency Secure Access</h2>
+        <p style="color:var(--muted); margin-bottom:20px;">Enter Agency PIN</p>
+        <div id="pin-dots" style="font-size: 2em; letter-spacing: 12px; height: 40px;"></div>
+        <div class="keypad">
+            <div class="key" onclick="press(1)">1</div><div class="key" onclick="press(2)">2</div><div class="key" onclick="press(3)">3</div>
+            <div class="key" onclick="press(4)">4</div><div class="key" onclick="press(5)">5</div><div class="key" onclick="press(6)">6</div>
+            <div class="key" onclick="press(7)">7</div><div class="key" onclick="press(8)">8</div><div class="key" onclick="press(9)">9</div>
+            <div class="key" style="background:transparent" onclick="clearPin()">C</div><div class="key" onclick="press(0)">0</div>
         </div>
     </div>
 
     <div id="notification-area"></div>
 
-    <div id="view-main" class="container hidden">
+    <div id="view-home" class="container hidden">
         <div class="header-stats">
             <div class="stat-block"><div class="stat-label">Next 30 Days</div><div id="stat-upcoming" class="stat-value">0€</div></div>
-            <div class="stat-block"><div class="stat-label">Estimated MRR</div><div id="stat-mrr" class="stat-value">0€</div></div>
+            <div class="stat-block"><div class="stat-label">Monthly MRR</div><div id="stat-mrr" class="stat-value">0€</div></div>
         </div>
+        
         <div class="card">
-            <div class="cal-header"><button onclick="moveMonth(-1)">‹</button><span id="cal-title">Month</span><button onclick="moveMonth(1)">›</button></div>
+            <div class="cal-header">
+                <span id="cal-title">Month Year</span>
+                <div><button onclick="adjMonth(-1)" style="width:auto; padding:5px 15px; margin:0;">‹</button> <button onclick="adjMonth(1)" style="width:auto; padding:5px 15px; margin:0;">›</button></div>
+            </div>
             <div id="calendar-grid" class="cal-grid"></div>
         </div>
-        <div class="card"><h2>Timeline</h2><div id="timeline-list"></div></div>
+
+        <div class="card">
+            <h2 style="font-size:1em; color:var(--muted); text-transform:uppercase;">Scheduled Renewals</h2>
+            <div id="timeline"></div>
+        </div>
     </div>
 
     <div id="view-add" class="container hidden">
         <div class="card">
-            <h2>Add Project</h2>
+            <h2>Add New Hosting</h2>
             <form id="add-form">
-                <input type="text" id="name" placeholder="Client Name" required>
-                <select id="plan"><option value="Basic">Basic ($18/$14)</option><option value="CMS">CMS ($29/$23)</option></select>
-                <select id="cycle"><option value="monthly">Monthly</option><option value="annual">Annual</option></select>
-                <div class="checkbox-wrapper"><span>Non-Profit (-50%)</span><input type="checkbox" id="nonprofit" style="width:auto;"></div>
-                <label>Renewal Date</label><input type="date" id="date" required>
-                <button type="submit">Save Project</button>
+                <label>Client Name</label><input type="text" id="c-name" placeholder="Client Name" required>
+                <label>Webflow Plan</label><select id="c-plan"><option value="Basic">Basic ($18/$14)</option><option value="CMS" selected>CMS ($29/$23)</option></select>
+                <label>Billing Cycle</label><select id="c-cycle"><option value="monthly">Monthly</option><option value="annual">Annual</option></select>
+                <div class="checkbox-row"><span>Non-Profit (-50%)</span><input type="checkbox" id="c-np"></div>
+                <label>Renewal Date</label><input type="date" id="c-date" required>
+                <button type="submit" id="save-btn">Save to Agency Drive</button>
             </form>
         </div>
     </div>
 
-    <div class="nav hidden" id="navbar">
-        <div onclick="showTab('main')">📅 Calendar</div>
-        <div onclick="showTab('add')">➕ Add</div>
+    <div class="nav hidden" id="nav-bar">
+        <div class="nav-item active" onclick="tab('home')">📅 Calendar</div>
+        <div class="nav-item" onclick="tab('add')">➕ Add Client</div>
     </div>
 
     <script>
         const API = "https://script.google.com/macros/s/AKfycbzyWVxoBOVF5vDC3GxILhSSLuGX3a7ku8yTr-ejio9g7yguO144heqwELsk-Sw3fDOJ8A/exec";
         const PIN = "1234";
-        let data = [], curMonth = new Date().getMonth(), curYear = new Date().getFullYear(), pinIn = "";
+        let db = [], curMonth = new Date().getMonth(), curYear = new Date().getFullYear(), inputPin = "";
 
-        function addPin(n) { pinIn += n; document.getElementById('pin-display').innerText = "•".repeat(pinIn.length); if(pinIn===PIN) login(); else if(pinIn.length>=4) clearPin(); }
-        function clearPin() { pinIn = ""; document.getElementById('pin-display').innerText = ""; }
-        function login() { document.getElementById('auth-screen').classList.add('hidden'); document.getElementById('view-main').classList.remove('hidden'); document.getElementById('navbar').classList.remove('hidden'); load(); }
+        // --- AUTH ---
+        function press(n) {
+            inputPin += n;
+            document.getElementById('pin-dots').innerText = "•".repeat(inputPin.length);
+            if(inputPin === PIN) {
+                document.getElementById('auth-screen').classList.add('hidden');
+                document.getElementById('nav-bar').classList.remove('hidden');
+                tab('home');
+                refresh();
+            } else if(inputPin.length >= 4) clearPin();
+        }
+        function clearPin() { inputPin = ""; document.getElementById('pin-dots').innerText = ""; }
 
-        async function load() {
-            const resp = await fetch(API);
-            const res = await resp.json();
-            data = res.data;
+        // --- CORE LOGIC ---
+        async function refresh() {
+            const r = await fetch(API);
+            const j = await r.json();
+            db = j.data;
             render();
         }
 
-        function getPrice(plan, cycle, isNp) {
-            let p = (plan === 'CMS') ? (cycle === 'monthly' ? 29 : 276) : (cycle === 'monthly' ? 18 : 168);
-            if(isNp) p *= 0.5;
-            return { usd: p, eur: p * 0.92 };
+        function calc(plan, cycle, isNp) {
+            let usd = (plan === 'CMS') ? (cycle === 'monthly' ? 29 : 276) : (cycle === 'monthly' ? 18 : 168);
+            if(isNp) usd *= 0.5;
+            return { usd: usd, eur: usd * 0.92 }; // Safe exchange rate
         }
 
         function render() {
-            const list = document.getElementById('timeline-list'), grid = document.getElementById('calendar-grid'), notif = document.getElementById('notification-area');
-            list.innerHTML = ""; grid.innerHTML = ""; notif.innerHTML = "";
-            let upTotal = 0, mrr = 0;
+            const timeline = document.getElementById('timeline'), grid = document.getElementById('calendar-grid'), notif = document.getElementById('notification-area');
+            timeline.innerHTML = ""; grid.innerHTML = ""; notif.innerHTML = "";
+            let up30 = 0, mrrTotal = 0;
 
             document.getElementById('cal-title').innerText = new Date(curYear, curMonth).toLocaleDateString(undefined, {month:'long', year:'numeric'});
 
-            data.forEach(c => {
-                const d = new Date(c.NextRenewal), prices = getPrice(c.PlanType, c.BillingCycle, c.IsNonProfit);
+            db.forEach(c => {
+                const d = new Date(c.NextRenewal), p = calc(c.PlanType, c.BillingCycle, c.IsNonProfit);
                 const diff = (d - new Date()) / 86400000;
                 
-                if(diff > 0 && diff <= 30) upTotal += prices.eur;
-                mrr += (c.BillingCycle === 'monthly' ? prices.eur : prices.eur / 12);
+                if(diff > 0 && diff <= 30) up30 += p.eur;
+                mrrTotal += (c.BillingCycle === 'monthly' ? p.eur : p.eur / 12);
 
+                // Non-Profit Reminder
                 if(c.IsNonProfit && diff > 0 && diff <= 30) {
-                    notif.innerHTML += `<div class="alert-banner">⚠️ Re-verify Non-Profit for ${c.ClientName} (Renewal in ${Math.round(diff)} days)</div>`;
+                    notif.innerHTML += `<div class="alert-banner">ACTION: Renew Non-Profit Discount for ${c.ClientName} (${Math.round(diff)}d left)</div>`;
                 }
 
                 if(d.getMonth() === curMonth && d.getFullYear() === curYear) {
-                    list.innerHTML += `<div class="list-item">
-                        <div><b>${c.ClientName}</b><div class="item-sub">${d.getDate()} ${c.PlanType} ${c.IsNonProfit ? '<span class="badge badge-discount">Non-Profit</span>' : ''}</div></div>
-                        <div><div class="price-eur">${prices.eur.toFixed(2)}€</div><div class="price-usd">$${prices.usd}</div></div>
-                    </div>`;
+                    timeline.innerHTML += `
+                        <div class="list-item">
+                            <div class="item-info">
+                                <b>${c.ClientName}</b>
+                                <div class="item-sub">
+                                    <span>🗓 ${d.getDate()} ${new Date(curYear, curMonth).toLocaleDateString(undefined, {month:'short'})}</span>
+                                    <span>• ${c.PlanType}</span>
+                                    ${c.IsNonProfit ? '<span class="badge badge-np">Non-Profit</span>' : ''}
+                                </div>
+                                <div style="display:flex; gap:8px;">
+                                    ${c.InvoiceURL ? `<a href="${c.InvoiceURL}" target="_blank" class="badge">📄 Invoice</a>` : `<button class="btn-action" onclick="upFile('${c.ID}', 'upload_invoice', this)">⬆️ Invoice</button>`}
+                                    ${c.IsNonProfit ? (c.DiscountDocURL ? `<a href="${c.DiscountDocURL}" target="_blank" class="badge">📄 Proof</a>` : `<button class="btn-action" onclick="upFile('${c.ID}', 'upload_discount_doc', this)">⬆️ Proof</button>`) : ''}
+                                </div>
+                            </div>
+                            <div class="price-box">
+                                <div class="price-eur">${p.eur.toFixed(2)}€</div>
+                                <div class="price-usd">$${p.usd}</div>
+                            </div>
+                        </div>`;
                 }
             });
 
-            document.getElementById('stat-upcoming').innerText = upTotal.toFixed(0) + "€";
-            document.getElementById('stat-mrr').innerText = mrr.toFixed(0) + "€";
+            document.getElementById('stat-upcoming').innerText = up30.toFixed(0) + "€";
+            document.getElementById('stat-mrr').innerText = mrrTotal.toFixed(0) + "€";
 
-            let first = new Date(curYear, curMonth, 1).getDay();
-            for(let i=0; i<first; i++) grid.innerHTML += `<div></div>`;
+            let firstDay = new Date(curYear, curMonth, 1).getDay();
+            for(let i=0; i<firstDay; i++) grid.innerHTML += `<div></div>`;
             for(let i=1; i<=new Date(curYear, curMonth+1, 0).getDate(); i++) {
-                let has = data.some(c => new Date(c.NextRenewal).getDate() === i && new Date(c.NextRenewal).getMonth() === curMonth);
+                let has = db.some(c => {
+                    let rd = new Date(c.NextRenewal);
+                    return rd.getDate() === i && rd.getMonth() === curMonth && rd.getFullYear() === curYear;
+                });
                 grid.innerHTML += `<div class="cal-cell ${has?'has-event':''}">${i}</div>`;
             }
         }
 
+        // --- UPLOAD LOGIC ---
+        async function upFile(id, action, btn) {
+            const input = document.createElement('input');
+            input.type = 'file'; input.accept = 'application/pdf';
+            input.onchange = async e => {
+                const file = e.target.files[0]; if(!file) return;
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = async () => {
+                    const originalText = btn.innerText;
+                    btn.innerText = "⏳...";
+                    const payload = { action: action, data: { filename: file.name, mimeType: file.type, base64: reader.result.split(',')[1], rowId: id } };
+                    await fetch(API, { method: 'POST', body: JSON.stringify(payload) });
+                    btn.innerText = "✅ Done";
+                    setTimeout(refresh, 1000);
+                };
+            };
+            input.click();
+        }
+
+        // --- FORMS & NAV ---
         document.getElementById('add-form').onsubmit = async (e) => {
             e.preventDefault();
+            const btn = document.getElementById('save-btn');
+            btn.innerText = "Saving to Sheets...";
             const p = { action: "add_subscription", data: { 
-                clientName: document.getElementById('name').value, 
-                planType: document.getElementById('plan').value,
-                billingCycle: document.getElementById('cycle').value,
-                isNonProfit: document.getElementById('nonprofit').checked,
-                nextRenewal: document.getElementById('date').value,
+                clientName: document.getElementById('c-name').value, 
+                planType: document.getElementById('c-plan').value,
+                billingCycle: document.getElementById('c-cycle').value,
+                isNonProfit: document.getElementById('c-np').checked,
+                nextRenewal: document.getElementById('c-date').value,
                 startDate: new Date().toISOString().split('T')[0], priceUSD: 0, priceEUR: 0
             }};
             await fetch(API, { method: 'POST', body: JSON.stringify(p) });
-            load(); showTab('main');
+            btn.innerText = "Save to Agency Drive";
+            document.getElementById('add-form').reset();
+            tab('home');
+            refresh();
         };
 
-        function showTab(t) { document.getElementById('view-main').classList.toggle('hidden', t!=='main'); document.getElementById('view-add').classList.toggle('hidden', t!=='add'); }
-        function moveMonth(v) { curMonth += v; if(curMonth>11){curMonth=0;curYear++} if(curMonth<0){curMonth=11;curYear--} render(); }
+        function tab(t) {
+            document.getElementById('view-home').classList.toggle('hidden', t!=='home');
+            document.getElementById('view-add').classList.toggle('hidden', t!=='add');
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.toggle('active', i.innerText.toLowerCase().includes(t)));
+        }
+        function adjMonth(v) { curMonth += v; if(curMonth>11){curMonth=0;curYear++} if(curMonth<0){curMonth=11;curYear--} render(); }
     </script>
 </body>
 </html>
