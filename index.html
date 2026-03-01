@@ -11,8 +11,9 @@
         
         body { 
             font-family: -apple-system, BlinkMacSystemFont, sans-serif; 
-            background: var(--bg); color: var(--text); margin: 0; padding-bottom: 120px; 
+            background: var(--bg); color: var(--text); margin: 0; padding-bottom: 140px; 
             display: flex; flex-direction: column; align-items: center;
+            -webkit-font-smoothing: antialiased;
         }
 
         .container { padding: 20px; width: 100%; max-width: 900px; box-sizing: border-box; }
@@ -22,63 +23,85 @@
             box-shadow: 0 8px 30px rgba(0,0,0,0.5); border: 1px solid #2c2c2e;
         }
         
-        /* Stats Dashboard */
+        #notification-area { width: 100%; max-width: 900px; position: sticky; top: 0; z-index: 1000; }
+        .alert-banner { background: var(--danger); color: white; padding: 14px; font-size: 0.9em; font-weight: 700; text-align: center; border-radius: 0 0 12px 12px; }
+        
         .header-stats { display: flex; gap: 16px; margin-bottom: 24px; width: 100%; }
         .stat-block { background: #1c1c1e; border: 1px solid #2c2c2e; padding: 20px; border-radius: 18px; flex: 1; text-align: center; }
+        .stat-label { font-size: 0.75em; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .stat-value { font-size: 1.6em; font-weight: 800; color: var(--success); }
 
-        /* Form Grid Fix */
+        .view-toggle { display: flex; background: #1c1c1e; border: 1px solid #2c2c2e; border-radius: 12px; padding: 4px; margin-bottom: 24px; width: fit-content; }
+        .toggle-btn { border: none; background: transparent; color: var(--muted); padding: 8px 24px; font-size: 0.85em; font-weight: 600; border-radius: 9px; cursor: pointer; transition: 0.2s; }
+        .toggle-btn.active { background: #3a3a3c; color: white; }
+
+        /* Form Grid - Optimized for Desktop */
         @media (min-width: 768px) {
             #add-form { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 24px; align-items: end; }
             .checkbox-row { grid-column: span 2; justify-content: flex-start !important; gap: 12px; }
             #save-btn { grid-column: span 2; width: 100%; margin-top: 10px; }
         }
 
-        /* BUTTON ALIGNMENT FIXES */
+        .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+        .cal-cell { background: #2c2c2e; border-radius: 10px; padding: 18px 0; text-align: center; font-size: 1em; }
+        .cal-cell.has-event { border-bottom: 4px solid var(--accent); }
+        .cal-cell.today { border: 1px solid var(--accent); color: var(--accent); font-weight: bold; }
+
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; border-bottom: 1px solid #2c2c2e; }
+        .item-info b { font-size: 1.15em; color: #fff; display: block; margin-bottom: 4px; }
+        .item-sub { font-size: 0.85em; color: var(--muted); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        
+        .price-box { text-align: right; min-width: 110px; }
+        .price-eur { font-weight: 800; font-size: 1.2em; color: #fff; }
+        .price-usd { font-size: 0.8em; color: var(--muted); margin-top: 2px; }
+
+        .badge { background: #2c2c2e; color: var(--accent); padding: 6px 12px; border-radius: 8px; font-size: 0.75em; font-weight: 600; text-decoration: none; display: inline-block; margin-top: 8px; }
+        .badge-np { color: var(--warning); border: 1px solid var(--warning); background: transparent; }
+        
         .btn-action { 
             background: var(--accent); color: white; border: none; 
-            padding: 8px 16px; border-radius: 8px; font-size: 0.8em; 
-            font-weight: 700; cursor: pointer; 
-            width: fit-content; /* THIS STOPS THE OVEREXTENDING */
-            display: inline-flex; align-items: center; justify-content: center;
+            padding: 8px 16px; border-radius: 8px; font-size: 0.75em; 
+            font-weight: 700; cursor: pointer; width: fit-content; 
+            margin-top: 8px; transition: opacity 0.2s;
         }
-
-        /* DATE PICKER ALIGNMENT */
-        input[type="date"] {
-            position: relative;
-            padding-right: 40px; /* Space for the calendar icon */
-        }
+        .btn-action:active { opacity: 0.7; }
 
         input, select, button { 
             width: 100%; padding: 14px; border-radius: 12px; 
             border: 1px solid #2c2c2e; background: #1c1c1e; 
-            color: white; font-size: 16px; box-sizing: border-box;
+            color: white; font-size: 16px; margin-bottom: 16px; box-sizing: border-box;
         }
+        .checkbox-row { display: flex; justify-content: space-between; align-items: center; background: #1c1c1e; border: 1px solid #2c2c2e; padding: 16px; border-radius: 12px; margin-bottom: 16px; }
+        .checkbox-row input { width: 20px; height: 20px; margin: 0; accent-color: var(--accent); }
 
-        .price-box { text-align: right; min-width: 120px; }
-
-        /* Bottom Nav Pill */
         .nav { 
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); 
-            width: auto; min-width: 300px; 
+            width: auto; min-width: 320px; 
             background: rgba(28,28,30,0.85); backdrop-filter: blur(20px); 
-            display: flex; padding: 8px; border-radius: 24px; 
-            border: 1px solid #38383a; box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            display: flex; padding: 8px; border-radius: 24px; border: 1px solid #38383a; box-shadow: 0 10px 40px rgba(0,0,0,0.6);
         }
-        .nav-item { padding: 10px 20px; border-radius: 18px; cursor: pointer; color: var(--muted); font-size: 0.9em; font-weight: 600; }
+        .nav-item { padding: 10px 24px; border-radius: 18px; cursor: pointer; color: var(--muted); font-size: 0.85em; font-weight: 600; text-align: center; flex: 1; }
         .nav-item.active { background: #3a3a3c; color: #fff; }
+
+        #auth-screen { position: fixed; inset: 0; background: black; z-index: 2000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .key { width: 80px; height: 80px; background: #1c1c1e; border: 1px solid #2c2c2e; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.7em; cursor: pointer; }
+        
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
     <div id="auth-screen">
-        <h1 style="font-weight: 800; letter-spacing: -1px; margin-bottom: 8px;">Agency Drive</h1>
-        <p style="color:var(--muted); margin-bottom:32px; font-weight: 500;">Please verify your identity</p>
-        <div id="pin-dots" style="font-size: 2.2em; letter-spacing: 16px; height: 48px; color: var(--accent);"></div>
+        <h2 style="margin-bottom:8px;">Agency Secure Access</h2>
+        <p style="color:var(--muted); margin-bottom:24px;">Enter credentials</p>
+        <div id="pin-dots" style="font-size: 2.2em; letter-spacing: 14px; height: 44px; color: var(--accent);"></div>
         <div class="keypad">
             <div class="key" onclick="press(1)">1</div><div class="key" onclick="press(2)">2</div><div class="key" onclick="press(3)">3</div>
             <div class="key" onclick="press(4)">4</div><div class="key" onclick="press(5)">5</div><div class="key" onclick="press(6)">6</div>
             <div class="key" onclick="press(7)">7</div><div class="key" onclick="press(8)">8</div><div class="key" onclick="press(9)">9</div>
-            <div class="key" style="border:none; background:transparent" onclick="clearPin()">Clear</div><div class="key" onclick="press(0)">0</div>
+            <div class="key" style="border:none; background:transparent; font-size:1em;" onclick="clearPin()">Clear</div><div class="key" onclick="press(0)">0</div>
         </div>
     </div>
 
@@ -86,35 +109,35 @@
 
     <div id="view-home" class="container hidden">
         <div class="header-stats">
-            <div class="stat-block"><div class="stat-label">30-Day Outlook</div><div id="stat-upcoming" class="stat-value">0€</div></div>
-            <div class="stat-block"><div class="stat-label">Projected MRR</div><div id="stat-mrr" class="stat-value">0€</div></div>
+            <div class="stat-block"><div class="stat-label">Next 30 Days</div><div id="stat-upcoming" class="stat-value">0€</div></div>
+            <div class="stat-block"><div class="stat-label">Agency MRR</div><div id="stat-mrr" class="stat-value">0€</div></div>
         </div>
 
         <div class="view-toggle">
             <button id="btn-cal" class="toggle-btn active" onclick="setView('cal')">Calendar View</button>
-            <button id="btn-list" class="toggle-btn" onclick="setView('list')">Audit List</button>
+            <button id="btn-list" class="toggle-btn" onclick="setView('list')">Full Audit</button>
         </div>
         
         <div id="mode-cal">
             <div class="card">
                 <div class="cal-header">
-                    <span id="cal-title" style="font-size: 1.2em; font-weight: 700;">Month Year</span>
+                    <span id="cal-title" style="font-size: 1.1em; font-weight: 700;">Month Year</span>
                     <div style="display:flex; gap:8px;">
-                        <button onclick="adjMonth(-1)" style="width:auto; padding:8px 16px; margin:0; background:#2c2c2e;">‹</button> 
-                        <button onclick="adjMonth(1)" style="width:auto; padding:8px 16px; margin:0; background:#2c2c2e;">›</button>
+                        <button onclick="adjMonth(-1)" style="width:auto; padding:6px 14px; margin:0; background:#2c2c2e;">‹</button> 
+                        <button onclick="adjMonth(1)" style="width:auto; padding:6px 14px; margin:0; background:#2c2c2e;">›</button>
                     </div>
                 </div>
                 <div id="calendar-grid" class="cal-grid"></div>
             </div>
             <div class="card">
-                <h2 style="font-size:0.8em; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:20px;">Monthly Renewals</h2>
+                <h2 style="font-size:0.8em; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:15px;">Monthly Timeline</h2>
                 <div id="timeline-month"></div>
             </div>
         </div>
 
         <div id="mode-list" class="hidden">
             <div class="card">
-                <h2 style="font-size:0.8em; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:20px;">Master Hosting Audit</h2>
+                <h2 style="font-size:0.8em; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:15px;">Chronological Audit</h2>
                 <div id="timeline-full"></div>
             </div>
         </div>
@@ -122,13 +145,13 @@
 
     <div id="view-add" class="container hidden">
         <div class="card">
-            <h2 class="form-header">Provision New Hosting</h2>
+            <h2>Add Hosting Plan</h2>
             <form id="add-form">
                 <div><label>Project Name</label><input type="text" id="c-name" placeholder="Client Name" required></div>
                 <div><label>Webflow Tier</label><select id="c-plan"><option value="Basic">Basic ($18/$14)</option><option value="CMS" selected>CMS ($29/$23)</option></select></div>
                 <div><label>Billing Cycle</label><select id="c-cycle"><option value="monthly">Monthly</option><option value="annual">Annual</option></select></div>
                 <div><label>Next Renewal Date</label><input type="date" id="c-date" required></div>
-                <div class="checkbox-row"><span>Apply Non-Profit Discount (-50%)</span><input type="checkbox" id="c-np"></div>
+                <div class="checkbox-row"><span>Non-Profit Discount (-50%)</span><input type="checkbox" id="c-np"></div>
                 <button type="submit" id="save-btn">Commit to Database</button>
             </form>
         </div>
@@ -136,7 +159,7 @@
 
     <div class="nav hidden" id="nav-bar">
         <div class="nav-item active" onclick="tab('home')">Dashboard</div>
-        <div class="nav-item" onclick="tab('add')">Provisioning</div>
+        <div class="nav-item" onclick="tab('add')">Add Client</div>
     </div>
 
     <script>
@@ -199,11 +222,11 @@
                         <div class="item-info">
                             <b>${c.ClientName}</b>
                             <div class="item-sub">
-                                <span>🗓 ${d.toLocaleDateString(undefined, {day:'numeric', month:'short', year:'2-digit'})}</span>
+                                <span>🗓 ${d.toLocaleDateString(undefined, {day:'numeric', month:'short'})}</span>
                                 <span>• ${c.PlanType}</span>
                                 ${c.IsNonProfit ? '<span class="badge badge-np">Non-Profit</span>' : ''}
                             </div>
-                            <div style="display:flex; gap:12px; margin-top:12px;">
+                            <div style="display:flex; gap:10px; flex-wrap:wrap;">
                                 ${c.InvoiceURL ? `<a href="${c.InvoiceURL}" target="_blank" class="badge">View Invoice</a>` : `<button class="btn-action" onclick="upFile('${c.ID}', 'upload_invoice', this)">Upload Invoice</button>`}
                                 ${c.IsNonProfit ? (c.DiscountDocURL ? `<a href="${c.DiscountDocURL}" target="_blank" class="badge">View Proof</a>` : `<button class="btn-action" onclick="upFile('${c.ID}', 'upload_discount_doc', this)" style="background:var(--warning); color:#000;">Upload Proof</button>`) : ''}
                             </div>
@@ -272,7 +295,7 @@
         function tab(t) {
             document.getElementById('view-home').classList.toggle('hidden', t!=='home');
             document.getElementById('view-add').classList.toggle('hidden', t!=='add');
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.toggle('active', i.innerText.toLowerCase().includes(t.substring(0,4))));
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.toggle('active', i.innerText.toLowerCase().includes(t.substring(0,3))));
         }
         function adjMonth(v) { curMonth += v; if(curMonth>11){curMonth=0;curYear++} if(curMonth<0){curMonth=11;curYear--} render(); }
     </script>
